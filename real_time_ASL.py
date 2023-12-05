@@ -14,6 +14,12 @@ vid = cv2.VideoCapture(0)
 
 old_predicted_class = -1
 
+font = cv2.FONT_HERSHEY_SIMPLEX
+position = (10,50)
+fontScale = 2
+fontColor = (255, 255, 0)
+texto = ""
+
 while(True):
     __, frame = vid.read()
     frame = cv2.flip(frame,1)
@@ -22,24 +28,28 @@ while(True):
     image = cv2.cvtColor(frame,cv2.COLOR_BGR2RGBA)
   
     image = cv2.resize(image,(64,64))
+
+
     # plt.imshow(image)
 
 # Realizar predicciones en la imagen actual
     prediction = model2.predict(np.expand_dims(image[:, :, :3], axis=0),verbose=0)
     predicted_class = np.argmax(prediction)
-
-    cv2.imshow(f'predicción', frame)
+    
+   
     if(old_predicted_class != predicted_class):
         old_predicted_class = predicted_class
-        print(class_labels[predicted_class])
-    # the 'q' button is set as the
-    # quitting button you may use any
-    # desired button of your choice
+        texto = class_labels[predicted_class]
+        # print(class_labels[predicted_class])
+    cv2.putText(frame, texto, position, font, fontScale, fontColor,3)
+    cv2.imshow(f'predicción', frame)
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 vid.release()
 cv2.destroyAllWindows()
+
 
 # # # Visualizar la imagen
 # image = cv2.cvtColor(frame,cv2.COLOR_BGR2RGBA)
